@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Космическая дискотека</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Гирлянды с плавным переливом цветов */
+        .garland {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .light {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: colorChange 5s infinite, flicker 1.5s infinite alternate;
+            filter: blur(1px);
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes colorChange {
+            0% { background-color: #ff0000; box-shadow: 0 0 10px #ff0000; }
+            20% { background-color: #ff9900; box-shadow: 0 0 10px #ff9900; }
+            40% { background-color: #ffff00; box-shadow: 0 0 10px #ffff00; }
+            60% { background-color: #00ff00; box-shadow: 0 0 10px #00ff00; }
+            80% { background-color: #0066ff; box-shadow: 0 0 10px #0066ff; }
+            100% { background-color: #ff00ff; box-shadow: 0 0 10px #ff00ff; }
+        }
+        
+        /* Кнопка комплимента */
+        .compliment-btn {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            font-weight: bold;
+        }
+        
+        .compliment-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        
+        .compliment-popup {
+            position: fixed;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            z-index: 11;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 300px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+        
+        .compliment-popup.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        /* Калькулятор в левом верхнем углу */
+        .calculator-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 2;
+        }
+        
+        .calculator {
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            border-radius: 15px;
+            padding: 15px;
+            width: 220px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .display {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            text-align: right;
+            font-size: 20px;
+            height: 45px;
+            overflow: hidden;
+            font-family: 'Digital', monospace;
+            color: #00ffaa;
+            text-shadow: 0 0 5px #00ffaa;
+            border: 1px solid rgba(0, 255, 170, 0.2);
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        
+        button {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            backdrop-filter: blur(3px);
+        }
+        
+        button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+        
+        button.operator {
+            background-color: rgba(0, 180, 255, 0.3);
+        }
+        
+        button.equals {
+            background-color: rgba(0, 200, 100, 0.4);
+            grid-column: span 2;
+        }
+        
+        button.clear {
+            background-color: rgba(255, 80, 80, 0.4);
+        }
+        
+        /* Реалистичная планета */
+        .planet-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 2;
+        }
+        
+        .planet {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, 
+                #4b6cb7 0%, 
+                #182848 50%, 
+                #000000 100%);
+            box-shadow: 
+                0 0 30px rgba(75, 108, 183, 0.8),
+                inset 10px -10px 20px rgba(0, 0, 0, 0.8),
+                inset -5px 5px 10px rgba(255, 255, 255, 0.1);
+            position: relative;
+            animation: rotate 30s infinite linear;
+            overflow: hidden;
+        }
+        
+        .planet::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: 
+                radial-gradient(circle at 20% 40%, 
+                    rgba(255, 255, 255, 0.8) 0%, 
+                    rgba(255, 255, 255, 0.1) 30%, 
+                    transparent 50%),
+                linear-gradient(to right, 
+                    transparent 40%, 
+                    rgba(255, 255, 255, 0.1) 50%, 
+                    transparent 60%);
+            opacity: 0.6;
+        }
+        
+        .clouds {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: 
+                radial-gradient(circle at 60% 30%, 
+                    rgba(255, 255, 255, 0.3) 0%, 
+                    transparent 20%),
+                radial-gradient(circle at 30% 70%, 
+                    rgba(255, 255, 255, 0.2) 0%, 
+                    transparent 25%);
+            animation: cloudMove 40s infinite linear;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes cloudMove {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Дискотека и танцор */
+        .disco-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 2;
+            width: 200px;
+            height: 220px;
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+        }
+        
+        .disco-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .disco-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .disco-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .disco-btn.active {
+            background-color: #ff00ff;
+            box-shadow: 0 0 10px #ff00ff;
+        }
+        
+        .dancer-container {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        
+        .dancer {
+            position: relative;
+            width: 50px;
+            height: 120px;
+        }
+        
+        .dancer-head {
+            width: 30px;
+            height: 30px;
+            background-color: #ffccaa;
+            border-radius: 50%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 3;
+            box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .dancer-body {
+            width: 40px;
+            height: 50px;
+            background: linear-gradient(to bottom, #3366ff, #2244aa);
+            margin: -5px auto 0;
+            border-radius: 15px 15px 5px 5px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .dancer-arm {
+            position: absolute;
+            width: 10px;
+            background: linear-gradient(to bottom, #3366ff, #2244aa);
+            border-radius: 5px;
+            z-index: 1;
+        }
+        
+        .dancer-arm.left {
+            left: -10px;
+            top: 10px;
+            height: 40px;
+            transform-origin: top center;
+            animation: armLeftMove 1s infinite alternate;
+        }
+        
+        .dancer-arm.right {
+            right: -10px;
+            top: 10px;
+            height: 40px;
+            transform-origin: top center;
+            animation: armRightMove 1s infinite alternate;
+        }
+        
+        .dancer-leg {
+            position: absolute;
+            width: 12px;
+            background: linear-gradient(to bottom, #3333cc, #222288);
+            border-radius: 0 0 5px 5px;
+            bottom: -40px;
+            z-index: 1;
+        }
+        
+        .dancer-leg.left {
+            left: 10px;
+            height: 40px;
+            transform-origin: top center;
+            animation: legLeftMove 0.8s infinite alternate;
+        }
+        
+        .dancer-leg.right {
+            right: 10px;
+            height: 40px;
+            transform-origin: top center;
+            animation: legRightMove 0.8s infinite alternate-reverse;
+        }
+        
+        @keyframes armLeftMove {
+            0% { transform: rotate(-20deg); }
+            100% { transform: rotate(40deg); }
+        }
+        
+        @keyframes armRightMove {
+            0% { transform: rotate(20deg); }
+            100% { transform: rotate(-40deg); }
+        }
+        
+        @keyframes legLeftMove {
+            0% { transform: rotate(-10deg); }
+            100% { transform: rotate(30deg); }
+        }
+        
+        @keyframes legRightMove {
+            0% { transform: rotate(10deg); }
+            100% { transform: rotate(-30deg); }
+        }
+        
+        .disco-lights {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .disco-light {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            filter: blur(5px);
+            animation: discoGlow 3s infinite alternate;
+        }
+        
+        @keyframes discoGlow {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            100% { transform: scale(1.2); opacity: 1; }
+        }
+        
+        .dance-floor {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(to right, 
+                #ff0000, #ff9900, #ffff00, #00ff00, #0066ff, #ff00ff);
+            opacity: 0.5;
+            animation: floorGlow 5s infinite linear;
+        }
+        
+        @keyframes floorGlow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        
+        /* Анимация остановки */
+        .stop-animation * {
+            animation: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="garland" id="garland-top"></div>
+    <div class="garland" id="garland-right"></div>
+    <div class="garland" id="garland-bottom"></div>
+    <div class="garland" id="garland-left"></div>
+    
+    <!-- Новая кнопка комплимента -->
+    <button class="compliment-btn" id="compliment-btn">Хм, а ведь заманчиво!</button>
+    <div class="compliment-popup" id="compliment-popup"></div>
+    
+    <div class="calculator-container">
+        <div class="calculator">
+            <div class="display" id="display">0</div>
+            <div class="buttons">
+                <button class="clear" onclick="clearDisplay()">C</button>
+                <button onclick="appendToDisplay('(')">(</button>
+                <button onclick="appendToDisplay(')')">)</button>
+                <button class="operator" onclick="appendToDisplay('/')">/</button>
+                
+                <button onclick="appendToDisplay('7')">7</button>
+                <button onclick="appendToDisplay('8')">8</button>
+                <button onclick="appendToDisplay('9')">9</button>
+                <button class="operator" onclick="appendToDisplay('*')">×</button>
+                
+                <button onclick="appendToDisplay('4')">4</button>
+                <button onclick="appendToDisplay('5')">5</button>
+                <button onclick="appendToDisplay('6')">6</button>
+                <button class="operator" onclick="appendToDisplay('-')">-</button>
+                
+                <button onclick="appendToDisplay('1')">1</button>
+                <button onclick="appendToDisplay('2')">2</button>
+                <button onclick="appendToDisplay('3')">3</button>
+                <button class="operator" onclick="appendToDisplay('+')">+</button>
+                
+                <button onclick="appendToDisplay('0')">0</button>
+                <button onclick="appendToDisplay('.')">.</button>
+                <button class="equals" onclick="calculate()">=</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="planet-container">
+        <div class="planet">
+            <div class="clouds"></div>
+        </div>
+    </div>
+    
+    <div class="disco-container">
+        <div class="disco-controls">
+            <button class="disco-btn" id="start-dance">Включить танец</button>
+            <button class="disco-btn" id="stop-dance">Выключить танец</button>
+        </div>
+        
+        <div class="dancer-container">
+            <div class="disco-lights" id="disco-lights"></div>
+            <div class="dancer" id="dancer">
+                <div class="dancer-head"></div>
+                <div class="dancer-body"></div>
+                <div class="dancer-arm left"></div>
+                <div class="dancer-arm right"></div>
+                <div class="dancer-leg left"></div>
+                <div class="dancer-leg right"></div>
+            </div>
+            <div class="dance-floor"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Создаем гирлянды с плавным переливом цветов
+        function createGarland(garlandId, position, count) {
+            const garland = document.getElementById(garlandId);
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            
+            for (let i = 0; i < count; i++) {
+                const light = document.createElement('div');
+                light.className = 'light';
+                
+                // Разная скорость анимации для каждого огонька
+                light.style.animationDuration = `${3 + Math.random() * 7}s`;
+                light.style.animationDelay = `${Math.random() * 5}s`;
+                
+                if (position === 'top') {
+                    light.style.left = `${(width / count) * i}px`;
+                    light.style.top = '10px';
+                } else if (position === 'right') {
+                    light.style.right = '10px';
+                    light.style.top = `${(height / count) * i}px`;
+                } else if (position === 'bottom') {
+                    light.style.left = `${(width / count) * i}px`;
+                    light.style.bottom = '10px';
+                } else if (position === 'left') {
+                    light.style.left = '10px';
+                    light.style.top = `${(height / count) * i}px`;
+                }
+                
+                garland.appendChild(light);
+            }
+        }
+        
+        // Создаем гирлянды для каждой стороны
+        createGarland('garland-top', 'top', 30);
+        createGarland('garland-right', 'right', 20);
+        createGarland('garland-bottom', 'bottom', 30);
+        createGarland('garland-left', 'left', 20);
+        
+        // Логика калькулятора
+        let currentInput = '0';
+        const display = document.getElementById('display');
+        
+        function updateDisplay() {
+            display.textContent = currentInput;
+        }
+        
+        function appendToDisplay(value) {
+            if (currentInput === '0' && value !== '.') {
+                currentInput = value;
+            } else {
+                currentInput += value;
+            }
+            updateDisplay();
+        }
+        
+        function clearDisplay() {
+            currentInput = '0';
+            updateDisplay();
+        }
+        
+        function calculate() {
+            try {
+                currentInput = eval(currentInput).toString();
+                updateDisplay();
+            } catch (error) {
+                currentInput = 'Ошибка';
+                updateDisplay();
+                setTimeout(clearDisplay, 1000);
+            }
+        }
+        
+        // Создаем диско-огни
+        const discoLights = document.getElementById('disco-lights');
+        const discoColors = ['#ff0000', '#ff9900', '#ffff00', '#00ff00', '#0066ff', '#ff00ff'];
+        
+        for (let i = 0; i < 12; i++) {
+            const light = document.createElement('div');
+            light.className = 'disco-light';
+            
+            const color = discoColors[Math.floor(Math.random() * discoColors.length)];
+            light.style.backgroundColor = color;
+            light.style.boxShadow = `0 0 15px ${color}`;
+            
+            light.style.left = `${Math.random() * 170}px`;
+            light.style.top = `${Math.random() * 150}px`;
+            light.style.animationDelay = `${Math.random() * 3}s`;
+            light.style.animationDuration = `${2 + Math.random() * 3}s`;
+            
+            discoLights.appendChild(light);
+        }
+        
+        // Управление танцем
+        const startBtn = document.getElementById('start-dance');
+        const stopBtn = document.getElementById('stop-dance');
+        const dancer = document.getElementById('dancer');
+        const lights = document.getElementById('disco-lights');
+        
+        startBtn.addEventListener('click', function() {
+            dancer.classList.remove('stop-animation');
+            lights.style.opacity = '1';
+            startBtn.classList.add('active');
+            stopBtn.classList.remove('active');
+        });
+        
+        stopBtn.addEventListener('click', function() {
+            dancer.classList.add('stop-animation');
+            lights.style.opacity = '0';
+            stopBtn.classList.add('active');
+            startBtn.classList.remove('active');
+        });
+        
+        // По умолчанию танец включен
+        startBtn.click();
+        
+        // База позитивных и дерзких комплиментов (40 вариантов)
+        const compliments = [
+            "Ты выглядишь так, будто знаешь ответ на вопрос, который я даже не задал!",
+            "Если бы уверенность была валютой, ты бы был мультимиллионером!",
+            "Ты излучаешь энергию, от которой хочется свернуть горы!",
+            "Ты - ходячее доказательство того, что некоторые люди рождаются под счастливой звездой!",
+            "Твоя улыбка - это оружие массового поражения, но в хорошем смысле!",
+            "Ты выглядишь так, будто можешь продать снег эскимосу и заставить их просить добавки!",
+            "Ты - тот редкий случай, когда реальность превосходит все ожидания!",
+            "Если бы харизма была электричеством, ты бы освещал целый город!",
+            "Ты - живое доказательство того, что совершенство существует!",
+            "Ты выглядишь так, будто твой внутренний голос говорит только комплименты!",
+            "Ты - тот человек, ради которого хочется становиться лучше!",
+            "Если бы уверенность была музыкой, ты бы был хитом номер один!",
+            "Ты выглядишь так, будто можешь убедить кофе быть бодрящим по утрам!",
+            "Ты - ходячее воплощение фразы 'я не идеален, но я близок к этому'!",
+            "Ты выглядишь так, будто твое резюме начинается со слова 'легендарный'!",
+            "Ты - тот человек, перед которым хочется снять шляпу, даже если ты ее не носишь!",
+            "Если бы стиль был оружием, ты бы был спецназом!",
+            "Ты выглядишь так, будто твои планы на вечер - это чьи-то мечты на год!",
+            "Ты - тот случай, когда реальность круче, чем любая выдумка!",
+            "Ты выглядишь так, будто можешь заставить часы идти в твоем ритме!",
+            "Если бы уверенность была духами, твой аромат сводил бы всех с ума!",
+            "Ты - ходячее доказательство того, что некоторые люди рождаются с золотым билетом!",
+            "Ты выглядишь так, будто твоя уверенность - это национальное достояние!",
+            "Ты - тот человек, который заставляет верить, что невозможное возможно!",
+            "Если бы харизма была вакциной, ты бы был суперраспространителем!",
+            "Ты выглядишь так, будто твоя уверенность может заряжать телефоны!",
+            "Ты - тот человек, ради которого хочется нарушать правила!",
+            "Если бы харизму можно было измерить, ты бы побил все рекорды!",
+            "Ты выглядишь так, будто можешь заставить дождь идти вверх!",
+            "Ты - ходячее доказательство того, что правила созданы, чтобы их нарушать!",
+            "Ты выглядишь так, будто твоя улыбка может остановить время!",
+            "Если бы уверенность была суперсилой, ты бы был супергероем!",
+            "Ты - тот человек, который делает обычные дни незабываемыми!",
+            "Ты выглядишь так, будто можешь заставить солнце светить ночью!",
+            "Если бы стиль был олимпийским видом спорта, ты бы взял золото!",
+            "Ты - ходячее доказательство того, что некоторые люди рождаются с VIP-статусом!",
+            "Ты выглядишь так, будто твоя уверенность может двигать горы!",
+            "Если бы харизма была напитком, ты бы был самым крепким эспрессо!",
+            "Ты - тот человек, который превращает обычные моменты в легендарные!",
+            "Ты выглядишь так, будто твоя энергия может питать целые города!"
+        ];
+        
+        // Функция для показа случайного комплимента
+        const complimentBtn = document.getElementById('compliment-btn');
+        const complimentPopup = document.getElementById('compliment-popup');
+        
+        complimentBtn.addEventListener('click', function() {
+            // Выбираем случайный комплимент
+            const randomCompliment = compliments[Math.floor(Math.random() * compliments.length)];
+            
+            // Показываем попап с комплиментом
+            complimentPopup.textContent = randomCompliment;
+            complimentPopup.classList.add('show');
+        });
+        
+        // Закрытие попапа по клику
+        complimentPopup.addEventListener('click', function() {
+            complimentPopup.classList.remove('show');
+        });
+        
+        // Обработка нажатия клавиш
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            
+            if (/[0-9\.\+\-\*\/\(\)]/.test(key)) {
+                appendToDisplay(key);
+            } else if (key === 'Enter') {
+                calculate();
+            } else if (key === 'Escape' || key === 'Delete') {
+                clearDisplay();
+            } else if (key === 'Backspace') {
+                currentInput = currentInput.slice(0, -1);
+                if (currentInput === '') currentInput = '0';
+                updateDisplay();
+            }
+        });
+    </script>
+</body>
+</html>
