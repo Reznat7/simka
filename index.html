@@ -13,12 +13,9 @@
             font-family: 'Arial', sans-serif;
             overflow-x: hidden;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
         
-        /* Гирлянды с плавным переливом цветов */
+        /* Гирлянды */
         .garland {
             position: fixed;
             width: 100%;
@@ -29,8 +26,8 @@
         
         .light {
             position: absolute;
-            width: 12px;
-            height: 12px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             animation: colorChange 5s infinite, flicker 1.5s infinite alternate;
             filter: blur(1px);
@@ -42,12 +39,12 @@
         }
         
         @keyframes colorChange {
-            0% { background-color: #ff0000; box-shadow: 0 0 10px #ff0000; }
-            20% { background-color: #ff9900; box-shadow: 0 0 10px #ff9900; }
-            40% { background-color: #ffff00; box-shadow: 0 0 10px #ffff00; }
-            60% { background-color: #00ff00; box-shadow: 0 0 10px #00ff00; }
-            80% { background-color: #0066ff; box-shadow: 0 0 10px #0066ff; }
-            100% { background-color: #ff00ff; box-shadow: 0 0 10px #ff00ff; }
+            0% { background-color: #ff0000; box-shadow: 0 0 5px #ff0000; }
+            20% { background-color: #ff9900; box-shadow: 0 0 5px #ff9900; }
+            40% { background-color: #ffff00; box-shadow: 0 0 5px #ffff00; }
+            60% { background-color: #00ff00; box-shadow: 0 0 5px #00ff00; }
+            80% { background-color: #0066ff; box-shadow: 0 0 5px #0066ff; }
+            100% { background-color: #ff00ff; box-shadow: 0 0 5px #ff00ff; }
         }
         
         /* Кнопка комплимента */
@@ -61,13 +58,21 @@
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 15px 30px;
-            font-size: 18px;
+            padding: 12px 24px;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: all 0.3s;
             backdrop-filter: blur(5px);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
             font-weight: bold;
+            white-space: nowrap;
+        }
+        
+        @media (max-width: 768px) {
+            .compliment-btn {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
         }
         
         .compliment-btn:hover {
@@ -83,9 +88,10 @@
             z-index: 11;
             background-color: rgba(0, 0, 0, 0.7);
             color: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 15px;
-            max-width: 300px;
+            max-width: 80%;
+            width: 300px;
             text-align: center;
             opacity: 0;
             transition: opacity 0.3s;
@@ -93,6 +99,8 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             cursor: pointer;
+            font-size: 1rem;
+            line-height: 1.4;
         }
         
         .compliment-popup.show {
@@ -100,55 +108,77 @@
             pointer-events: auto;
         }
         
-        /* Калькулятор в левом верхнем углу */
+        /* Калькулятор */
         .calculator-container {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 10px;
+            left: 10px;
             z-index: 2;
         }
         
         .calculator {
             background-color: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(8px);
-            border-radius: 15px;
-            padding: 15px;
-            width: 220px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 10px;
+            width: 200px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .calculator {
+                width: 160px;
+                padding: 8px;
+            }
         }
         
         .display {
             background-color: rgba(0, 0, 0, 0.5);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 12px;
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 8px;
             text-align: right;
-            font-size: 20px;
-            height: 45px;
+            font-size: 1.2rem;
+            height: 35px;
             overflow: hidden;
-            font-family: 'Digital', monospace;
+            font-family: 'Courier New', monospace;
             color: #00ffaa;
-            text-shadow: 0 0 5px #00ffaa;
+            text-shadow: 0 0 3px #00ffaa;
             border: 1px solid rgba(0, 255, 170, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .display {
+                font-size: 1rem;
+                height: 30px;
+                padding: 6px;
+            }
         }
         
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 5px;
         }
         
         button {
             background-color: rgba(255, 255, 255, 0.1);
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 16px;
+            border-radius: 5px;
+            padding: 8px;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.2s;
             backdrop-filter: blur(3px);
+        }
+        
+        @media (max-width: 768px) {
+            button {
+                padding: 6px;
+                font-size: 0.8rem;
+            }
         }
         
         button:hover {
@@ -169,29 +199,36 @@
             background-color: rgba(255, 80, 80, 0.4);
         }
         
-        /* Реалистичная планета */
+        /* Планета */
         .planet-container {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
+            bottom: 10px;
+            left: 10px;
             z-index: 2;
         }
         
         .planet {
-            width: 100px;
-            height: 100px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, 
                 #4b6cb7 0%, 
                 #182848 50%, 
                 #000000 100%);
             box-shadow: 
-                0 0 30px rgba(75, 108, 183, 0.8),
-                inset 10px -10px 20px rgba(0, 0, 0, 0.8),
-                inset -5px 5px 10px rgba(255, 255, 255, 0.1);
+                0 0 20px rgba(75, 108, 183, 0.8),
+                inset 8px -8px 15px rgba(0, 0, 0, 0.8),
+                inset -4px 4px 8px rgba(255, 255, 255, 0.1);
             position: relative;
             animation: rotate 30s infinite linear;
             overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .planet {
+                width: 60px;
+                height: 60px;
+            }
         }
         
         .planet::before {
@@ -237,31 +274,39 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Дискотека и танцор */
+        /* Дискотека */
         .disco-container {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 10px;
+            right: 10px;
             z-index: 2;
-            width: 200px;
-            height: 220px;
+            width: 180px;
+            height: 200px;
             background-color: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(5px);
-            border-radius: 15px;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 15px;
+            padding: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .disco-container {
+                width: 150px;
+                height: 180px;
+                padding: 8px;
+            }
         }
         
         .disco-controls {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 10px;
         }
         
         .disco-btn {
@@ -269,10 +314,17 @@
             color: white;
             border: none;
             border-radius: 5px;
-            padding: 8px 15px;
+            padding: 6px 12px;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 14px;
+            font-size: 0.7rem;
+        }
+        
+        @media (max-width: 768px) {
+            .disco-btn {
+                padding: 5px 10px;
+                font-size: 0.6rem;
+            }
         }
         
         .disco-btn:hover {
@@ -281,13 +333,13 @@
         
         .disco-btn.active {
             background-color: #ff00ff;
-            box-shadow: 0 0 10px #ff00ff;
+            box-shadow: 0 0 8px #ff00ff;
         }
         
         .dancer-container {
             position: relative;
             width: 100%;
-            height: 150px;
+            height: 120px;
             display: flex;
             justify-content: center;
             align-items: flex-end;
@@ -295,74 +347,74 @@
         
         .dancer {
             position: relative;
-            width: 50px;
-            height: 120px;
+            width: 40px;
+            height: 100px;
         }
         
         .dancer-head {
-            width: 30px;
-            height: 30px;
+            width: 25px;
+            height: 25px;
             background-color: #ffccaa;
             border-radius: 50%;
             margin: 0 auto;
             position: relative;
             z-index: 3;
-            box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: inset -4px -4px 8px rgba(0, 0, 0, 0.2);
         }
         
         .dancer-body {
-            width: 40px;
-            height: 50px;
+            width: 35px;
+            height: 40px;
             background: linear-gradient(to bottom, #3366ff, #2244aa);
-            margin: -5px auto 0;
-            border-radius: 15px 15px 5px 5px;
+            margin: -4px auto 0;
+            border-radius: 12px 12px 4px 4px;
             position: relative;
             z-index: 2;
         }
         
         .dancer-arm {
             position: absolute;
-            width: 10px;
+            width: 8px;
             background: linear-gradient(to bottom, #3366ff, #2244aa);
-            border-radius: 5px;
+            border-radius: 4px;
             z-index: 1;
         }
         
         .dancer-arm.left {
-            left: -10px;
-            top: 10px;
-            height: 40px;
+            left: -8px;
+            top: 8px;
+            height: 35px;
             transform-origin: top center;
             animation: armLeftMove 1s infinite alternate;
         }
         
         .dancer-arm.right {
-            right: -10px;
-            top: 10px;
-            height: 40px;
+            right: -8px;
+            top: 8px;
+            height: 35px;
             transform-origin: top center;
             animation: armRightMove 1s infinite alternate;
         }
         
         .dancer-leg {
             position: absolute;
-            width: 12px;
+            width: 10px;
             background: linear-gradient(to bottom, #3333cc, #222288);
-            border-radius: 0 0 5px 5px;
-            bottom: -40px;
+            border-radius: 0 0 4px 4px;
+            bottom: -35px;
             z-index: 1;
         }
         
         .dancer-leg.left {
-            left: 10px;
-            height: 40px;
+            left: 8px;
+            height: 35px;
             transform-origin: top center;
             animation: legLeftMove 0.8s infinite alternate;
         }
         
         .dancer-leg.right {
-            right: 10px;
-            height: 40px;
+            right: 8px;
+            height: 35px;
             transform-origin: top center;
             animation: legRightMove 0.8s infinite alternate-reverse;
         }
@@ -400,10 +452,10 @@
         
         .disco-light {
             position: absolute;
-            width: 30px;
-            height: 30px;
+            width: 25px;
+            height: 25px;
             border-radius: 50%;
-            filter: blur(5px);
+            filter: blur(4px);
             animation: discoGlow 3s infinite alternate;
         }
         
@@ -417,7 +469,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 10px;
+            height: 8px;
             background: linear-gradient(to right, 
                 #ff0000, #ff9900, #ffff00, #00ff00, #0066ff, #ff00ff);
             opacity: 0.5;
@@ -441,7 +493,6 @@
     <div class="garland" id="garland-bottom"></div>
     <div class="garland" id="garland-left"></div>
     
-    <!-- Новая кнопка комплимента -->
     <button class="compliment-btn" id="compliment-btn">Хм, а ведь заманчиво!</button>
     <div class="compliment-popup" id="compliment-popup"></div>
     
@@ -484,8 +535,8 @@
     
     <div class="disco-container">
         <div class="disco-controls">
-            <button class="disco-btn" id="start-dance">Включить танец</button>
-            <button class="disco-btn" id="stop-dance">Выключить танец</button>
+            <button class="disco-btn" id="start-dance">Вкл танец</button>
+            <button class="disco-btn" id="stop-dance">Выкл танец</button>
         </div>
         
         <div class="dancer-container">
@@ -503,7 +554,7 @@
     </div>
     
     <script>
-        // Создаем гирлянды с плавным переливом цветов
+        // Создаем гирлянды
         function createGarland(garlandId, position, count) {
             const garland = document.getElementById(garlandId);
             const width = window.innerWidth;
@@ -513,21 +564,20 @@
                 const light = document.createElement('div');
                 light.className = 'light';
                 
-                // Разная скорость анимации для каждого огонька
                 light.style.animationDuration = `${3 + Math.random() * 7}s`;
                 light.style.animationDelay = `${Math.random() * 5}s`;
                 
                 if (position === 'top') {
                     light.style.left = `${(width / count) * i}px`;
-                    light.style.top = '10px';
+                    light.style.top = '5px';
                 } else if (position === 'right') {
-                    light.style.right = '10px';
+                    light.style.right = '5px';
                     light.style.top = `${(height / count) * i}px`;
                 } else if (position === 'bottom') {
                     light.style.left = `${(width / count) * i}px`;
-                    light.style.bottom = '10px';
+                    light.style.bottom = '5px';
                 } else if (position === 'left') {
-                    light.style.left = '10px';
+                    light.style.left = '5px';
                     light.style.top = `${(height / count) * i}px`;
                 }
                 
@@ -535,11 +585,13 @@
             }
         }
         
-        // Создаем гирлянды для каждой стороны
-        createGarland('garland-top', 'top', 30);
-        createGarland('garland-right', 'right', 20);
-        createGarland('garland-bottom', 'bottom', 30);
-        createGarland('garland-left', 'left', 20);
+        // Инициализация гирлянд после загрузки страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            createGarland('garland-top', 'top', Math.floor(window.innerWidth / 20));
+            createGarland('garland-right', 'right', Math.floor(window.innerHeight / 25));
+            createGarland('garland-bottom', 'bottom', Math.floor(window.innerWidth / 20));
+            createGarland('garland-left', 'left', Math.floor(window.innerHeight / 25));
+        });
         
         // Логика калькулятора
         let currentInput = '0';
@@ -574,20 +626,20 @@
             }
         }
         
-        // Создаем диско-огни
+        // Диско-огни
         const discoLights = document.getElementById('disco-lights');
         const discoColors = ['#ff0000', '#ff9900', '#ffff00', '#00ff00', '#0066ff', '#ff00ff'];
         
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < 10; i++) {
             const light = document.createElement('div');
             light.className = 'disco-light';
             
             const color = discoColors[Math.floor(Math.random() * discoColors.length)];
             light.style.backgroundColor = color;
-            light.style.boxShadow = `0 0 15px ${color}`;
+            light.style.boxShadow = `0 0 10px ${color}`;
             
-            light.style.left = `${Math.random() * 170}px`;
-            light.style.top = `${Math.random() * 150}px`;
+            light.style.left = `${Math.random() * 150}px`;
+            light.style.top = `${Math.random() * 120}px`;
             light.style.animationDelay = `${Math.random() * 3}s`;
             light.style.animationDuration = `${2 + Math.random() * 3}s`;
             
@@ -614,10 +666,10 @@
             startBtn.classList.remove('active');
         });
         
-        // По умолчанию танец включен
+        // Включить танец по умолчанию
         startBtn.click();
         
-        // База позитивных и дерзких комплиментов (40 вариантов)
+        // Комплименты
         const compliments = [
             "Ты выглядишь так, будто знаешь ответ на вопрос, который я даже не задал!",
             "Если бы уверенность была валютой, ты бы был мультимиллионером!",
@@ -661,25 +713,20 @@
             "Ты выглядишь так, будто твоя энергия может питать целые города!"
         ];
         
-        // Функция для показа случайного комплимента
         const complimentBtn = document.getElementById('compliment-btn');
         const complimentPopup = document.getElementById('compliment-popup');
         
         complimentBtn.addEventListener('click', function() {
-            // Выбираем случайный комплимент
             const randomCompliment = compliments[Math.floor(Math.random() * compliments.length)];
-            
-            // Показываем попап с комплиментом
             complimentPopup.textContent = randomCompliment;
             complimentPopup.classList.add('show');
         });
         
-        // Закрытие попапа по клику
         complimentPopup.addEventListener('click', function() {
             complimentPopup.classList.remove('show');
         });
         
-        // Обработка нажатия клавиш
+        // Обработка клавиш
         document.addEventListener('keydown', function(event) {
             const key = event.key;
             
